@@ -5,19 +5,31 @@ module ElasticParser::Nodes
     end
 
     def to_query
-      _key, value = @data.to_a.flatten
+      key, value = @data.to_a.flatten
 
-      {
-        bool: {
-          should: {
-            multi_match: {
-              query: value,
-              fields: ElasticParser::FIELDS
-            }
-          },
-          minimum_should_match: 1
+      case key
+      when :term
+        {
+          bool: {
+            should: {
+              multi_match: {
+                query: value,
+                fields: ElasticParser::FIELDS
+              }
+            },
+            minimum_should_match: 1
+          }
         }
-      }
+      when :phrase
+        {
+          bool: {
+            minimum_should_match: 1,
+            :should => ElasticParser::FIELDS.map do |field|
+              { match_phrase: { field => value } }
+            end
+          }
+        }
+      end
     end
   end
 end

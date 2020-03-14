@@ -2,9 +2,20 @@ require "parslet"
 
 module ElasticParser
   class Parser < Parslet::Parser
-    rule(:term) { match('.').repeat(1).as(:term) }
+    rule(:space)    { match('\s').repeat(1) }
+    rule(:space?)   { space.maybe }
 
-    rule(:query) { term.as(:query) }
+    rule(:term) { match('[^\s"]').repeat(1) }
+
+    rule(:quote) { str('"') }
+
+    rule(:phrase) do
+      (quote >> (term >> space?).repeat.as(:phrase) >> quote) >> space?
+    end
+
+    rule(:value) { (term.as(:term) | phrase) }
+
+    rule(:query) { value.as(:query) }
     root(:query)
 
     def self.parse(raw_query)

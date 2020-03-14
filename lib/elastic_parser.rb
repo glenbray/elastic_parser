@@ -11,9 +11,9 @@ module ElasticParser
   FIELDS = ["title", "content"]
 
   # for debugging a transformed tree
-  def self.transform(raw_query)
-    # parse_tree = Parser.parse(raw_query)
-    # Transformer.new.apply(parse_tree)
+  def self.transform(query)
+    parse_tree = Parser.parse(query)
+    Transformer.new.apply(parse_tree)
   end
 
   def self.parse(query)
