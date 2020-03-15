@@ -6,7 +6,9 @@ module ElasticParser
     rule(:space?)   { space.maybe }
     rule(:quote) { str('"') }
 
-    rule(:term) { match('[^\s"]').repeat(1) }
+    rule(:term) do
+      str("OR").absent? >> match('[^\s"]').repeat(1)
+    end
 
     rule(:phrase) do
       (quote >> (term >> space?).repeat.as(:phrase) >> quote) >> space?
@@ -14,7 +16,8 @@ module ElasticParser
 
     rule(:value) { (term.as(:term) | phrase) }
 
-    rule(:and_op)   { ((space >> str('AND') >> space) | space?) }
+    rule(:and_op)   { ((space >> str("AND") >> space) | space?) }
+    rule(:or_op)   { (space >> str("OR") >> space) }
 
     rule(:and_condition) do
       (
@@ -22,7 +25,13 @@ module ElasticParser
       ).as(:and) | value
     end
 
-    rule(:query) { and_condition.as(:query) }
+    rule(:or_condition) do
+      (
+        and_condition.as(:left) >> or_op >> or_condition.as(:right)
+      ).as(:or) | and_condition
+    end
+
+    rule(:query) { or_condition.as(:query) }
     root(:query)
 
     def self.parse(raw_query)

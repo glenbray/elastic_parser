@@ -56,4 +56,16 @@ RSpec.describe ElasticParser::Parser do
       expect(subject.and_condition).to parse('a AND b')
     end
   end
+
+  describe '#or_op' do
+    it 'parses OR' do
+      expect(subject.or_op).to parse(' OR ')
+    end
+  end
+
+  describe '#or_condition' do
+    it 'parses with OR' do
+      expect(subject.or_condition).to parse('a OR b')
+    end
+  end
 end

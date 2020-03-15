@@ -4,6 +4,8 @@ module ElasticParser::Nodes
       case data
       when :and
         :must
+      when :or
+        :should
       else
         raise "Unknown operator: #{operator}"
       end

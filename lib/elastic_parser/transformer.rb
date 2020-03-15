@@ -14,6 +14,12 @@ module ElasticParser
       right.parent = node if right
     end
 
+    rule(or: { left: subtree(:left), right: subtree(:right) }) do
+      node = Nodes::OperatorNode.new(:or, left, right)
+      left.parent = node if left
+      right.parent = node if right
+    end
+
     rule(query: subtree(:query)) { ElasticTree.new(query) }
   end
 end
