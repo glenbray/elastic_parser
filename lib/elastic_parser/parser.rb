@@ -18,11 +18,18 @@ module ElasticParser
 
     rule(:and_op)   { ((space >> str("AND") >> space) | space?) }
     rule(:or_op)   { (space >> str("OR") >> space) }
+    rule(:not_op)   { str('-') }
+
+    rule(:not_condition) do
+      (
+        not_op >> value.as(:left) >> space.maybe
+      ).as(:not) | value
+    end
 
     rule(:and_condition) do
       (
-        value.as(:left) >> and_op >> and_condition.as(:right)
-      ).as(:and) | value
+        not_condition.as(:left) >> and_op >> and_condition.as(:right)
+      ).as(:and) | not_condition
     end
 
     rule(:or_condition) do

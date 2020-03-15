@@ -2,7 +2,7 @@ RSpec.describe ElasticParser do
   describe ".parse" do
     subject { ElasticParser.parse(query) }
 
-    context "simple query" do
+    describe "simple query" do
       let(:query) { "word" }
 
       it "returns multi match query" do
@@ -24,7 +24,7 @@ RSpec.describe ElasticParser do
       end
     end
 
-    context "phrase search" do
+    describe "phrase search" do
       let(:query) { '"this is a phrase"' }
 
       it "returns match phrase query" do
@@ -43,7 +43,7 @@ RSpec.describe ElasticParser do
       end
     end
 
-    context "AND query" do
+    describe "AND query" do
       let(:search_terms) { ['supplier', 'dog'] }
 
       let(:expected) do
@@ -85,7 +85,7 @@ RSpec.describe ElasticParser do
       end
     end
 
-    context "OR query" do
+    describe "OR query" do
       let(:search_terms) { ['supplier', 'dog'] }
 
       let(:expected) do
@@ -113,6 +113,36 @@ RSpec.describe ElasticParser do
       context "with OR operator" do
         let(:query) { "supplier OR dog"}
 
+        it "returns match phrase query" do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
+
+    describe "NOT query" do
+      let(:query) { "-dog"}
+
+      let(:expected) do
+        {
+          :query => {
+            :bool => {
+              :must_not => {
+                :bool => {
+                  :minimum_should_match => 1,
+                  :should => {
+                    :multi_match => {
+                      :fields => ElasticParser::FIELDS,
+                      :query => 'dog'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      end
+
+      context "with NOT operator" do
         it "returns match phrase query" do
           expect(subject).to eq(expected)
         end

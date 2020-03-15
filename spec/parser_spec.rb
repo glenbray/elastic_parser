@@ -68,4 +68,16 @@ RSpec.describe ElasticParser::Parser do
       expect(subject.or_condition).to parse('a OR b')
     end
   end
+
+  describe '#not_op' do
+    it 'parses -' do
+      expect(subject.not_op).to parse('-')
+    end
+  end
+
+  describe '#not_condition' do
+    it 'parses with -' do
+      expect(subject.or_condition).to parse('a OR b')
+    end
+  end
 end

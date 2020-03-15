@@ -6,6 +6,8 @@ module ElasticParser::Nodes
         :must
       when :or
         :should
+      when :not
+        :must_not
       else
         raise "Unknown operator: #{operator}"
       end

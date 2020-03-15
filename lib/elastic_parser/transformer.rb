@@ -20,6 +20,11 @@ module ElasticParser
       right.parent = node if right
     end
 
+    rule(not: { left: subtree(:left) }) do
+      node = Nodes::NotOperatorNode.new(:not, left)
+      left.parent = node if left
+    end
+
     rule(query: subtree(:query)) { ElasticTree.new(query) }
   end
 end
