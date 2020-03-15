@@ -4,6 +4,7 @@ require "elastic_parser/transformer"
 require "elastic_parser/elastic_tree"
 require "elastic_parser/nodes/elastic_node"
 require "elastic_parser/nodes/leaf_node"
+require "elastic_parser/nodes/operator_node"
 
 module ElasticParser
   class Error < StandardError; end

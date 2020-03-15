@@ -36,4 +36,24 @@ RSpec.describe ElasticParser::Parser do
       expect(subject.phrase).to parse('"a b c"')
     end
   end
+
+  describe '#and_op' do
+    it 'parses AND' do
+      expect(subject.and_op).to parse(' AND ')
+    end
+
+    it 'parses space when AND is not provided' do
+      expect(subject.and_op).to parse(' ')
+    end
+  end
+
+  describe '#and_condition' do
+    it 'parses with space' do
+      expect(subject.and_condition).to parse('a b')
+    end
+
+    it 'parses with AND' do
+      expect(subject.and_condition).to parse('a AND b')
+    end
+  end
 end

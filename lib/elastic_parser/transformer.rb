@@ -8,6 +8,12 @@ module ElasticParser
       Nodes::LeafNode.new(phrase: phrase.to_s.downcase)
     end
 
+    rule(and: { left: subtree(:left), right: subtree(:right) }) do
+      node = Nodes::OperatorNode.new(:and, left, right)
+      left.parent = node if left
+      right.parent = node if right
+    end
+
     rule(query: subtree(:query)) { ElasticTree.new(query) }
   end
 end

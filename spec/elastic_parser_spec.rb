@@ -42,5 +42,47 @@ RSpec.describe ElasticParser do
         expect(subject).to eq(expected)
       end
     end
+
+    context "AND query" do
+      let(:search_terms) { ['supplier', 'dog'] }
+
+      let(:expected) do
+        {
+          :query => {
+            :bool => {
+              :must => search_terms.map do |word|
+                {
+                  :bool => {
+                    :minimum_should_match => 1,
+                    :should => {
+                      :multi_match => {
+                        :fields => ElasticParser::FIELDS,
+                        :query => word
+                      }
+                    }
+                  }
+                }
+              end
+            }
+          }
+        }
+      end
+
+      context "with space" do
+        let(:query) { "supplier dog" }
+
+        it "returns match phrase query" do
+          expect(subject).to eq(expected)
+        end
+      end
+
+      context "with AND operator" do
+        let(:query) { "supplier AND dog"}
+
+        it "returns match phrase query" do
+          expect(subject).to eq(expected)
+        end
+      end
+    end
   end
 end
