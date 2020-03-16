@@ -4,6 +4,10 @@
 
 Build an elasticsearch query from a search expression.
 
+**Code for**
+- https://dev.to/glenbray/search-parser-part-1-45m4
+- https://dev.to/glenbray/search-parser-part-2-683
+
 ## Installation
 
 Add this line to your application's Gemfile:
