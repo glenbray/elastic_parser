@@ -80,4 +80,18 @@ RSpec.describe ElasticParser::Parser do
       expect(subject.or_condition).to parse('a OR b')
     end
   end
+
+  describe '#group' do
+    it 'parses terms within parentheses' do
+      expect(subject.group).to parse('(a b)')
+    end
+
+    it 'parses phrase within parentheses' do
+      expect(subject.group).to parse('(a "b c")')
+    end
+
+    it 'parses more complicated nesting' do
+      expect(subject.group).to parse('(b (c (d e)))')
+    end
+  end
 end

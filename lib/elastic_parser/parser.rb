@@ -4,10 +4,12 @@ module ElasticParser
   class Parser < Parslet::Parser
     rule(:space)    { str(" ").repeat(1) }
     rule(:space?)   { space.maybe }
-    rule(:quote) { str('"') }
+    rule(:quote)    { str('"') }
+    rule(:lparen)   { str('(') }
+    rule(:rparen)   { str(')') }
 
     rule(:term) do
-      str("OR").absent? >> match('[^\s"]').repeat(1)
+      str("OR").absent? >> match('[^\s"()-]').repeat(1)
     end
 
     rule(:phrase) do
@@ -20,10 +22,12 @@ module ElasticParser
     rule(:or_op)   { (space >> str("OR") >> space) }
     rule(:not_op)   { str('-') }
 
+    rule(:group) { (lparen >> or_condition >> rparen) | value }
+
     rule(:not_condition) do
       (
         not_op >> value.as(:left) >> space.maybe
-      ).as(:not) | value
+      ).as(:not) | group
     end
 
     rule(:and_condition) do

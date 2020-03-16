@@ -148,5 +148,85 @@ RSpec.describe ElasticParser do
         end
       end
     end
+
+    describe "Grouped query" do
+      let(:query) { "(a b) OR (c (d e))" }
+
+      let(:expected) do
+        {
+          :query => {
+            :bool => {
+              :should => [{
+                :bool => {
+                  :must => [{
+                    :bool => {
+                      :minimum_should_match => 1,
+                      :should => {
+                        :multi_match => {
+                          :fields => ElasticParser::FIELDS,
+                          :query => "a"
+                        }
+                      }
+                    }
+                  }, {
+                    :bool => {
+                      :minimum_should_match => 1,
+                      :should => {
+                        :multi_match => {
+                          :fields => ElasticParser::FIELDS,
+                          :query => "b"
+                        }
+                      }
+                    }
+                  }]
+                }
+              }, {
+                :bool => {
+                  :must => [{
+                    :bool => {
+                      :minimum_should_match => 1,
+                      :should => {
+                        :multi_match => {
+                          :fields => ElasticParser::FIELDS,
+                          :query => "c"
+                        }
+                      }
+                    }
+                  }, {
+                    :bool => {
+                      :must => [{
+                        :bool => {
+                          :minimum_should_match => 1,
+                          :should => {
+                            :multi_match => {
+                              :fields => ElasticParser::FIELDS,
+                              :query => "d"
+                            }
+                          }
+                        }
+                      }, {
+                        :bool => {
+                          :minimum_should_match => 1,
+                          :should => {
+                            :multi_match => {
+                              :fields => ElasticParser::FIELDS,
+                              :query => "e"
+                            }
+                          }
+                        }
+                      }]
+                    }
+                  }]
+                }
+              }]
+            }
+          }
+        }
+      end
+
+      it 'generates a nested query' do
+        expect(subject).to eq(expected)
+      end
+    end
   end
 end
