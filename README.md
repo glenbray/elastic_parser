@@ -22,21 +22,21 @@ Or install it yourself as:
 
 ## Usage
 
-#####Simple term search
+#### Simple term search
 
 ```ruby
 ElasticParser.parse("word")
 ```
 
 
-#####Phrase search
+#### Phrase search
 
 ```ruby
 ElasticParser.parse('"search for this exact string"')
 ```
 
 
-#####Perform `AND` operations
+#### Perform `AND` operations
 
 ```ruby
 ElasticParser.parse("a b c")
@@ -48,21 +48,21 @@ ElasticParser.parse("a AND b AND c")
 ```
 
 
-#####Perform `OR` operations
+#### Perform `OR` operations
 
 ```ruby
 ElasticParser.parse("a OR b OR c")
 ```
 
 
-#####Perform `NOT` operations
+#### Perform `NOT` operations
 
 ```ruby
 ElasticParser.parse("a -b")
 ```
 
 
-#####Grouping
+#### Grouping
 
 ```ruby
 ElasticParser.parse("a (b (c (e d)))")
